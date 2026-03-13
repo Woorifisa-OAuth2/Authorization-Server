@@ -1,38 +1,64 @@
 package dev.oauth.authorizationserver.config;
 
-
+import dev.oauth.authorizationserver.user.JpaUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JpaUserDetailsService jpaUserDetailsService;
+    private final PasswordEncoder passwordEncoder;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(
+            HttpSecurity http,
+            DaoAuthenticationProvider daoAuthenticationProvider
+    ) throws Exception {
         http
-                .authorizeHttpRequests(authorize ->
-                        authorize
-                        .anyRequest()
-                        .authenticated()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/api/clients", "/api/clients/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults());
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/api/clients", "/api/clients/**")
+                )
+                .authenticationProvider(daoAuthenticationProvider)
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .failureUrl("/login?error")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                );
 
         return http.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        var user = User.withUsername("user")
-                .password("{noop}1234")
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(jpaUserDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 }

@@ -1,0 +1,25 @@
+server:
+  port: 9000
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/oauth_provider?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: jaeha6183@
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server.servlet.session.cookie:
+  same-site: lax
+  http-only: true
+
+logging:
+  level:
+    org.springframework.security: TRACE
+    org.springframework.security.oauth2: TRACE
