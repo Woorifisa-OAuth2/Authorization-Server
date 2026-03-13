@@ -20,6 +20,18 @@ public class UserAccount {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, length = 50)
+    private String name;
+
+    @Column(nullable = false)
+    private Integer age;
+
+    @Column(nullable = false, length = 10)
+    private String gender;
+
+    @Column(nullable = false, length = 100)
+    private String email;
+
     @Column(nullable = false, length = 30)
     private String role;
 

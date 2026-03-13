@@ -42,6 +42,10 @@ public class TokenCustomizerConfig {
                 context.getClaims().claim("user_id", user.getId());
                 context.getClaims().claim("username", user.getUsername());
                 context.getClaims().claim("role", user.getRole());
+                context.getClaims().claim("name", user.getName());
+                context.getClaims().claim("age", user.getAge());
+                context.getClaims().claim("gender", user.getGender());
+                context.getClaims().claim("email", user.getEmail());
             }
 
             // ID Token 커스터마이징
