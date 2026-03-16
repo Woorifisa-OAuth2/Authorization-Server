@@ -3,6 +3,8 @@
 
 이 프로젝트는 **Spring Authorization Server**를 기반으로 구현한 **OAuth2 / OIDC 인가 서버입니다.**
 
+<img width="2094" height="1139" alt="Image" src="https://github.com/user-attachments/assets/720e241d-2fc2-4ccc-979b-12b6471382e1" />
+
 - 사용자 로그인 인증 처리
 - 클라이언트 애플리케이션 동적 등록
 - Authorization Code 발급
