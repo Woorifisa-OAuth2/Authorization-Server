@@ -166,7 +166,13 @@ code=...
 
 인가 서버의 핵심 엔드포인트를 활성화하는 설정 클래스입니다.
 
-이 설정을 통해 Spring Authorization Server가 내부적으로 다음 엔드포인트들을 활성화합니다.
+```java
+OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+```
+
+OAuth2AuthorizationServerConfigurer를 HttpSecurity에 붙여서Authorization Server 전용 필터들과 엔드포인트 처리를 등록
+
+내부적으로 다음 엔드포인트들을 활성화합니다.
 
 - /oauth2/authorize
 - /oauth2/token
